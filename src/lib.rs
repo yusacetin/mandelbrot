@@ -145,8 +145,8 @@ impl Mandelbrot {
         // Debug
         {
             let mut max_iter: f32 = 100.0 / self.zoom.sqrt();
-            if (max_iter > 100000.0) {
-                max_iter = 100000.0;
+            if (max_iter > 50000.0) {
+                max_iter = 50000.0;
             }
             web_sys::console::log_1(&format!("zoom: {}", self.zoom).into());
             web_sys::console::log_1(&format!("max_iter: {}", max_iter).into());
