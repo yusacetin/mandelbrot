@@ -100,6 +100,136 @@ async function run() {
             mandelbrot.zoom(step, normalized_x, normalized_y);
         });
     }
+
+    let touch_zooming = false; // cancel touch moving if zooming
+
+    // Touchscreen move
+    {
+        let webgl_canvas = document.getElementById("webgl_canvas");
+
+        let dragging = false;
+        let prev_x = 0.0;
+        let prev_y = 0.0;
+
+        // On first touch, begin dragging mode
+        webgl_canvas.addEventListener("touchstart", function(e) {
+            if (e.touches.length !== 1) {
+                return;
+            }
+
+            dragging = true;
+            prev_x = e.touches[0].clientX;
+            prev_y = e.touches[0].clientY;
+        });
+
+        // Exit dragging mode when touch event ends
+        webgl_canvas.addEventListener("touchend", function(e) {
+            dragging = false;
+        });
+
+        webgl_canvas.addEventListener("touchcancel", function(e) {
+            dragging = false;
+        });
+
+        // Handle drag event if in dragging mode
+        webgl_canvas.addEventListener("touchmove", function(e) {
+            e.preventDefault();
+            if (!dragging) {
+                return;
+            }
+            if (touch_zooming) {
+                return;
+            }
+
+            const cur_x = e.touches[0].clientX;
+            const cur_y = e.touches[0].clientY;
+
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+
+            let dx = (prev_x - cur_x) * 2;
+            let dy = (cur_y - prev_y) * 2;
+            if (w >= h) {
+                dx /= h;
+                dy /= h;
+            } else {
+                dx /= w;
+                dy /= w;
+            }
+
+            prev_x = cur_x;
+            prev_y = cur_y;
+
+            mandelbrot.move_center(dx, dy);
+        });
+    }
+
+    // Touchscreen zoom
+    {
+        // helper function
+        function get_distance(touch0, touch1) {
+            const dx = touch0.clientX - touch1.clientX;
+            const dy = touch0.clientY - touch1.clientY;
+            return Math.sqrt(dx*dx + dy*dy);
+        }
+
+        let webgl_canvas = document.getElementById("webgl_canvas");
+
+        let prev_dist = 0.0;
+
+        webgl_canvas.addEventListener("touchstart", function(e) {
+            if (e.touches.length === 2) {
+                prev_dist = get_distance(e.touches[0], e.touches[1]);
+            }
+        });
+
+        webgl_canvas.addEventListener("touchmove", function(e) {
+            if (e.touches.length !== 2) {
+                return;
+            }
+
+            e.preventDefault();
+            touch_zooming = true;
+            const cur_r = mandelbrot.get_zoom();
+            const step_coef = 0.006 * cur_r;
+
+            // Calculate difference in current and previous distance
+            const cur_dist = get_distance(e.touches[0], e.touches[1]);
+            const ddist_raw = cur_dist - prev_dist;
+            const ddist = ddist_raw * step_coef;
+
+            // Calculate center of pinch gesture
+            let center_x = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            let center_y = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+
+            center_x -= w/2;
+            center_y -= h/2;
+            center_y *= -1;
+
+            if (w >= h) {
+                center_x /= h;
+                center_y /= h;
+            } else {
+                center_x /= w;
+                center_y /= w;
+            }
+
+            center_x *= 2;
+            center_y *= 2;
+
+            mandelbrot.zoom(-ddist, center_x, center_y);
+
+            prev_dist = cur_dist;
+        });
+
+        webgl_canvas.addEventListener("touchend", function(e) {
+            prev_dist = 0.0;
+            touch_zooming = false;
+        });
+    }
 }
 
 run();
