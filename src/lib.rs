@@ -161,16 +161,13 @@ impl Mandelbrot {
         self.context.uniform1f(Some(&self.context.get_uniform_location(&self.program, "w").expect("Failed to get uniform w")), w);
         self.context.uniform1f(Some(&self.context.get_uniform_location(&self.program, "h").expect("Failed to get uniform h")), h);
 
-        // Debug
-        {
-            let mut max_iter: f32 = 100.0 / self.zoom.sqrt();
-            if (max_iter > 3000.0) {
-                max_iter = 3000.0;
-            }
-            web_sys::console::log_1(&format!("zoom: {}", self.zoom).into());
-            web_sys::console::log_1(&format!("max_iter: {}", max_iter).into());
-            self.context.uniform1f(Some(&self.context.get_uniform_location(&self.program, "max_iter").expect("Failed to get uniform center")), max_iter);
+        let mut max_iter: f32 = 100.0 / self.zoom.sqrt();
+        if (max_iter > 3000.0) {
+            max_iter = 3000.0;
         }
+        //web_sys::console::log_1(&format!("zoom: {}", self.zoom).into());
+        //web_sys::console::log_1(&format!("max_iter: {}", max_iter).into());
+        self.context.uniform1f(Some(&self.context.get_uniform_location(&self.program, "max_iter").expect("Failed to get uniform center")), max_iter);
 
         // Draw buffer
         self.context.draw_arrays(WebGl2RenderingContext::TRIANGLES, 0, 6);
