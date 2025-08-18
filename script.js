@@ -83,6 +83,7 @@ async function run() {
             prev_y = e.clientY;
 
             mandelbrot.move_center(dx, dy);
+            update_center_inputs();
         });
     }
 
@@ -91,13 +92,15 @@ async function run() {
         let webgl_canvas = document.getElementById("webgl_canvas");
         webgl_canvas.addEventListener("wheel", function(e) {
             e.preventDefault();
-            let step = mandelbrot.get_zoom() / 5.0;
+            let step = mandelbrot.get_zoom() / 3.5;
             if (e.deltaY < 0) {step *= -1;}
 
             let normalized_x = (e.clientX - window.innerWidth/2) / (window.innerWidth / 2);
             let normalized_y = (window.innerHeight/2 - e.clientY) / (window.innerHeight / 2);
 
             mandelbrot.zoom(step, normalized_x, normalized_y);
+            update_center_inputs();
+            update_zoom_input();
         });
     }
 
@@ -161,6 +164,7 @@ async function run() {
             prev_y = cur_y;
 
             mandelbrot.move_center(dx, dy);
+            update_center_inputs();
         });
     }
 
@@ -191,7 +195,7 @@ async function run() {
             e.preventDefault();
             touch_zooming = true;
             const cur_r = mandelbrot.get_zoom();
-            const step_coef = 0.006 * cur_r;
+            const step_coef = 0.008 * cur_r;
 
             // Calculate difference in current and previous distance
             const cur_dist = get_distance(e.touches[0], e.touches[1]);
@@ -221,6 +225,7 @@ async function run() {
             center_y *= 2;
 
             mandelbrot.zoom(-ddist, center_x, center_y);
+            update_zoom_input();
 
             prev_dist = cur_dist;
         });
@@ -230,6 +235,75 @@ async function run() {
             touch_zooming = false;
         });
     }
+
+    // Go to position with "Go" button
+    {
+        let go_button = document.getElementById("go_button");
+        go_button.addEventListener("click", (e) => {
+            let x = document.getElementById("center_x_input").value;
+            let y = document.getElementById("center_y_input").value;
+            let zoom = document.getElementById("zoom_input").value;
+            mandelbrot.set_center(x, y);
+            mandelbrot.set_zoom(zoom);
+        });
+    }
+
+    // Toggle fullscreen
+    {
+        let fs_button = document.getElementById("fs_button");
+        fs_button.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+            // Enter fullscreen
+            document.documentElement.requestFullscreen();
+        } else {
+            // Exit fullscreen
+            document.exitFullscreen();
+        }
+        });
+    }
+
+    // Hide panel button
+    {
+        let hide_button = document.getElementById("hide_button");
+        hide_button.addEventListener("click", (e) => {
+            let panel = document.getElementById("control_panel");
+            panel.setAttribute("style", "display: none;");
+
+            let show_button = document.getElementById("show_button");
+            show_button.removeAttribute("style");
+        });
+    }
+
+    // Show panel button
+    {
+        let show_button = document.getElementById("show_button");
+        show_button.addEventListener("click", (e) => {
+            let panel = document.getElementById("control_panel");
+            panel.removeAttribute("style");
+
+            show_button.setAttribute("style", "display: none;");
+        });
+    }
+
+    // Read properties from program
+    {
+        update_center_inputs();
+        update_zoom_input();
+    }
+}
+
+// Helper functions
+
+function update_center_inputs() {
+    let cx = document.getElementById("center_x_input");
+    let cy = document.getElementById("center_y_input");
+    cx.value = mandelbrot.get_center_x();
+    cy.value = mandelbrot.get_center_y();
+}
+
+function update_zoom_input() {
+    let zoom_input = document.getElementById("zoom_input");
+    zoom_input.value = mandelbrot.get_zoom();
 }
 
 run();

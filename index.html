@@ -10,6 +10,31 @@
         <script src="./pkg/mandelbrot.js"></script>
         <script type="module" src="script.js"></script>
 
+        <div id="control_panel_wrapper">
+            <div id="control_panel">
+                <div class="panel_row">
+                    <label>Center x: </label>
+                    <input id="center_x_input" type="number" value="0.0"/>
+                </div>
+                <div class="panel_row">
+                    <label>Center y: </label>
+                    <input id="center_y_input" type="number" value="0.0"/>
+                </div>
+                <div class="panel_row">
+                    <label>Zoom: </label>
+                    <input id="zoom_input" type="number" value="1.0"/>
+                </div>
+                <div class="panel_row">
+                    <button id="go_button">Go</button>
+                    <div class="right_aligned_buttons">
+                        <button id="fs_button">Fullscreen</button>
+                        <button id="hide_button">Hide Panel</button>
+                    </div>
+                </div>
+            </div>
+            <button id="show_button" style="display: none;">Show Panel</button>
+        </div>
+
         <canvas id="webgl_canvas"></canvas>
     </body>
 </html>

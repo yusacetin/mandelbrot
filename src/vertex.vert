@@ -23,7 +23,6 @@ void main() {
     pos_norm.y *= zoom;
     pos_norm.x += center.x;
     pos_norm.y += center.y;
-    pos_norm.x -= 0.6;
 
     gl_Position = vec4(i_pos, 0.0, 1.0);
 }

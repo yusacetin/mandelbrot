@@ -5,10 +5,104 @@ html, body {
     overscroll-behavior-y: contain;
     height: 100%;
     width: 100%;
+    font-family: sans-serif
 }
 
 canvas {
     display: block;
     height: 100%;
     width: 100%;
+}
+
+span {
+    color: rgb(240, 240, 240);
+}
+
+label {
+    font-size: 1.2em;
+    color: rgb(240, 240, 240);
+}
+
+.panel_row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.right_aligned_buttons {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+}
+
+#control_panel_wrapper {
+    position: absolute;
+}
+
+#control_panel{
+    padding: 10px 10px;
+    background-color: rgba(32, 32, 32, 0.96);
+    border-radius: 0 0 20px 0;
+    line-height: 1.2em;
+    max-width: 30em;
+}
+
+#control_panel > :last-child {
+    margin-bottom: 0px;
+}
+
+#go_button {
+    padding-right: 1em;
+    padding-left: 1em;
+}
+
+#show_button {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+/* Buttons */
+
+button {
+    font-size: 1em;
+    font-family: "Noto Sans", sans-serif;
+    border-radius: 9px;
+    background-color: #3B3B3B;
+    border: #585858 solid 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #FAFAFA;
+}
+
+button:hover {
+    background-color: #4A4A4A;
+}
+
+button:active {
+    background-color: #626262;
+}
+
+/* Inputs */
+
+input[type="number"] {
+    font-size: 1em;
+    width: 13em;
+    border-radius: 8px;
+    padding: 2px 6px;
+    margin-left: 5px;
+    outline: none;
+    border: #585858 solid 2px;
+    background-color: #3B3B3B;
+    color: #FAFAFA;
+    font-family: "Noto Sans", sans-serif;
+}
+
+input[type="number"]:focus {
+    border: rgb(25, 118, 210) solid 2px;
+}
+
+input[type="number"]:disabled {
+    background-color: #202020;
+    color: #606060;
 }

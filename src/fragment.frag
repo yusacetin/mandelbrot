@@ -29,9 +29,9 @@ void main() {
         }
     }
 
-    float r = sin(0.05);
-    float g = sin(0.08);
-    float b = sin(0.14);
+    float r = sin(0.02);
+    float g = sin(0.04);
+    float b = sin(0.07);
     if (i < max_iter_int) {
         // Calculate the smooth iteration count
         float smooth_i = float(i) + 1.0 - log(log(length(z))) / log(2.0);

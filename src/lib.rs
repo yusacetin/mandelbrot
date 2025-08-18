@@ -37,8 +37,27 @@ impl JsInterface {
         self.mandelbrot.zoom(val, mx, my);
     }
 
+    pub fn set_zoom(&mut self, val: f32) {
+        self.mandelbrot.zoom = val;
+        self.draw();
+    }
+
     pub fn get_zoom(&self) -> f32 {
         return self.mandelbrot.zoom;
+    }
+
+    pub fn get_center_x(&self) -> f32 {
+        return self.mandelbrot.center.x;
+    }
+
+    pub fn get_center_y(&self) -> f32 {
+        return self.mandelbrot.center.y;
+    }
+
+    pub fn set_center(&mut self, x: f32, y: f32) {
+        self.mandelbrot.center.x = x;
+        self.mandelbrot.center.y = y;
+        self.mandelbrot.draw();
     }
 }
 
@@ -98,7 +117,7 @@ impl Mandelbrot {
             window: window,
             canvas: canvas,
             center: Point {
-                x: 0.0,
+                x: -0.5,
                 y: 0.0
             },
             zoom: 1.0
@@ -145,8 +164,8 @@ impl Mandelbrot {
         // Debug
         {
             let mut max_iter: f32 = 100.0 / self.zoom.sqrt();
-            if (max_iter > 50000.0) {
-                max_iter = 50000.0;
+            if (max_iter > 3000.0) {
+                max_iter = 3000.0;
             }
             web_sys::console::log_1(&format!("zoom: {}", self.zoom).into());
             web_sys::console::log_1(&format!("max_iter: {}", max_iter).into());
