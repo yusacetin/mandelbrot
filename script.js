@@ -1,6 +1,18 @@
+/*
+This file is part of Mandelbrot Explorer.
+Mandelbrot Explorer is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Mandelbrot Explorer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Mandelbrot Explorer. If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import init, {JsInterface} from "./pkg/mandelbrot.js"
 
 let mandelbrot;
+let panel_visible = true;
 
 async function run() {
     await init();
@@ -271,6 +283,8 @@ async function run() {
 
             let show_button = document.getElementById("show_button");
             show_button.removeAttribute("style");
+
+            panel_visible = false;
         });
     }
 
@@ -282,6 +296,11 @@ async function run() {
             panel.removeAttribute("style");
 
             show_button.setAttribute("style", "display: none;");
+
+            panel_visible = true;
+
+            update_center_inputs();
+            update_zoom_input();
         });
     }
 
@@ -290,20 +309,51 @@ async function run() {
         update_center_inputs();
         update_zoom_input();
     }
+
+    // Reset button
+    {
+        let reset_button = document.getElementById("reset_button");
+        reset_button.addEventListener("click", (e) => {
+            mandelbrot.set_center(-0.5, 0.0);
+            mandelbrot.set_zoom(1.0);
+            update_center_inputs();
+            update_zoom_input();
+        });
+    }
 }
 
 // Helper functions
 
 function update_center_inputs() {
+    if (!panel_visible) {
+        return;
+    }
     let cx = document.getElementById("center_x_input");
     let cy = document.getElementById("center_y_input");
-    cx.value = mandelbrot.get_center_x();
-    cy.value = mandelbrot.get_center_y();
+    cx.value = truncate_value(mandelbrot.get_center_x());
+    cy.value = truncate_value(mandelbrot.get_center_y());
 }
 
 function update_zoom_input() {
+    if (!panel_visible) {
+        return;
+    }
     let zoom_input = document.getElementById("zoom_input");
-    zoom_input.value = mandelbrot.get_zoom();
+    let zoom = mandelbrot.get_zoom();
+    if (zoom <= 0.000001) {
+        zoom = 0.000001;
+    }
+    zoom_input.value = truncate_value(zoom);
+}
+
+function truncate_value(val) {
+    let val_str = String(val);
+    let decimal_pos = val_str.indexOf(".");
+    const limit = 10;
+    if (val_str.length - decimal_pos > limit) {
+        val_str = val_str.substring(0, decimal_pos + limit);
+    }
+    return Number(val_str);
 }
 
 run();

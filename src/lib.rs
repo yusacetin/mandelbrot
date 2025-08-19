@@ -1,3 +1,14 @@
+/*
+This file is part of Mandelbrot Explorer.
+Mandelbrot Explorer is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Mandelbrot Explorer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Mandelbrot Explorer. If not, see <https://www.gnu.org/licenses/>.
+*/
+
 #![allow(unused_parens)]
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -195,6 +206,12 @@ impl Mandelbrot {
     pub fn zoom(&mut self, val: f32, mx: f32, my: f32) {
         let prev_zoom: f32 = self.zoom;
         self.zoom += val;
+
+        if (self.zoom < 0.000001) {
+            self.zoom = 0.000001;
+        } else if (self.zoom > 5.0) {
+            self.zoom = 5.0;
+        }
         
         // Get window dimensions for aspect ratio
         let dpr: f64 = self.window.device_pixel_ratio();
